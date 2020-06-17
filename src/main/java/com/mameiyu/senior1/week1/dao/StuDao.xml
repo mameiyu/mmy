@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mameiyu.senior1.week1.dao.StuDao">
+	
+	<select id="selStu" resultType="Stu">	
+		select * from stu 
+		<where>
+			<if test="name!=null and name!=''">		
+				and sname like '%${name}%'
+			</if>
+			<if test="s1!=null and s1!=0">		
+				and comscore &gt;= ${s1}
+			</if>
+			<if test="s2!=null and s2!=0">		
+				and comscore &lt;= ${s2}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selOne" resultType="Stu" >
+		select * from stu  where sid =${id}	
+	</select>
+	<select id="selCla" resultType="Cla">
+		select * from cla
+	</select>
+	<update id="addF">
+		<if test="score==1">
+			update stu set comscore=comscore-3
+		</if>
+		<if test="score==2">
+			update stu set comscore=comscore-5
+		</if>
+		<if test="score==3">
+			update stu set comscore=comscore-10
+		</if>
+
+		where sid=${sid}
+	</update>
+	<insert id="addB">
+		insert into sc values(${sid},${cid})
+	</insert>
+	<select id="selById" resultType="map">
+		select a.sid sid,a.sname sname ,a.comscore,b.*from stu a left join sc c on c.sid=a.sid left join cla b on b.cid=c.cid where a.sid=${id}
+	</select>
+	<select id="selById2" resultType="map">
+	select COUNT(a.sid) count ,SUM(score) sum,a.sname sname ,a.comscore from stu a left join sc c on c.sid=a.sid left join cla b on b.cid=c.cid where a.sid=#{id}	</select>
+
+	<update id="delF">
+		<if test="cid==1">
+			update stu set comscore=comscore+3
+		</if>
+		<if test="cid==2">
+			update stu set comscore=comscore+5
+		</if>
+		<if test="cid==3">
+			update stu set comscore=comscore+10
+		</if>
+
+		where sid=${sid}
+	</update>
+	
+	<delete id="delB">
+		delete from sc where sid=${sid} and cid=${cid}
+	</delete>
+
+</mapper>
